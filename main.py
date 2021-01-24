@@ -1,5 +1,8 @@
 import os
 import time
+import logging.config
+
+import yaml
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -18,6 +21,13 @@ options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(executable_path=path, options=options)
 wait = WebDriverWait(driver, 10)
 
+# logging setup
+with open('logging.yaml', 'r') as file:
+    config = yaml.load(file, Loader=yaml.FullLoader)
+    logging.config.dictConfig(config)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
 
 def login_app(action):
     try:
@@ -27,7 +37,7 @@ def login_app(action):
         driver.find_element(By.XPATH,
                             "//button[normalize-space()='Login']").click()
     except (UnexpectedAlertPresentException, NoSuchElementException) as e:
-        # TODO logger.error()
+        logger.exception(e)
         driver.quit()
     else:
         if action == 'check_in':
@@ -41,8 +51,7 @@ def logout_app():
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, "//img[@title='LOGOUT']"))).click()
     except (NoSuchElementException, TimeoutException) as e:
-        # TODO logger.error()
-        print(e)
+        logger.exception(e)
     finally:
         driver.quit()
 
@@ -55,14 +64,14 @@ def check_in():
         alert_container = wait.until(
             EC.visibility_of_element_located(
                 (By.XPATH, "//div[@class='sweet-alert showSweetAlert']")))
+        alert_message = alert_container.find_element(By.TAG_NAME, 'h2').text
+        logger.info(f'Check In: {alert_message}')
         # click "OK" button
         time.sleep(1)
-        # TODO logger.info()
         alert_container.find_element(By.XPATH,
                                      "//button[@class='confirm'][normalize-space()='OK']").click()
     except (NoSuchElementException, TimeoutException) as e:
-        # TODO logger.error()
-        print(e)
+        logger.exception(e)
         driver.quit()
     else:
         logout_app()
@@ -83,12 +92,12 @@ def check_out():
                                      "//button[@class='confirm'][normalize-space()='OK']").click()
         # click "OK" button
         time.sleep(1)
-        # TODO logger.info()
+        alert_message = alert_container.find_element(By.TAG_NAME, 'h2').text
+        logger.info(f'Check Out: {alert_message}')
         alert_container.find_element(By.XPATH,
                                      "//button[@class='confirm'][normalize-space()='OK']").click()
     except (NoSuchElementException, TimeoutException) as e:
-        # TODO logger.error()
-        print(e)
+        logger.exception(e)
         driver.quit()
     else:
         logout_app()
