@@ -9,15 +9,13 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import *
+from telegrambot import TelegramBot
 
-# user config
-NIPPOS = '991483728'
-PASSWORD = '1991091812'
 
 # chrome options
 path = os.path.join(os.path.dirname(__file__), 'chromedriver')
 options = Options()
-options.add_experimental_option("detach", True)
+options.add_argument('--headless')
 driver = webdriver.Chrome(executable_path=path, options=options)
 wait = WebDriverWait(driver, 10)
 
@@ -28,17 +26,21 @@ with open('logging.yaml', 'r') as file:
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+# init TelegramBot
+bot = TelegramBot()
+
 
 def login_app(action):
     try:
         driver.get("https://presensi.posindonesia.co.id/")
-        driver.find_element(By.NAME, "UserID").send_keys(NIPPOS)
-        driver.find_element(By.NAME, "Password").send_keys(PASSWORD)
+        driver.find_element(By.NAME, "UserID").send_keys('991483728')
+        driver.find_element(By.NAME, "Password").send_keys('1991091812')
         driver.find_element(By.XPATH,
                             "//button[normalize-space()='Login']").click()
     except (UnexpectedAlertPresentException, NoSuchElementException) as e:
         logger.exception(e)
         driver.quit()
+        bot.send_message(ptext='Login error')
     else:
         if action == 'check_in':
             check_in()
@@ -46,7 +48,7 @@ def login_app(action):
             check_out()
 
 
-def logout_app():
+def logout_app(message):
     try:
         wait.until(EC.element_to_be_clickable(
             (By.XPATH, "//img[@title='LOGOUT']"))).click()
@@ -54,6 +56,7 @@ def logout_app():
         logger.exception(e)
     finally:
         driver.quit()
+        bot.send_message(ptext=message)
 
 
 def check_in():
@@ -74,7 +77,7 @@ def check_in():
         logger.exception(e)
         driver.quit()
     else:
-        logout_app()
+        logout_app(f'Check In: {alert_message}')
 
 
 def check_out():
@@ -100,4 +103,4 @@ def check_out():
         logger.exception(e)
         driver.quit()
     else:
-        logout_app()
+        logout_app(f'Check Out: {alert_message}')
