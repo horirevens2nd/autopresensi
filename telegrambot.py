@@ -1,10 +1,11 @@
+#!/usr/bin/env pipenv-shebang
 from telegram.ext import Updater
 
 
-class TelegramBot:
+class PythonTelegramBot:
     def __init__(self):
         self.updater = Updater(
-            token='1565394227:AAHkdcB1fwKau0ywu2VdtDVgoNaQX2-nQ80',
+            token='1527700084:AAExPWkJoqWuc-L--Ix-sNE6QFSB1DoKOFY',
             use_context=True)
         self.dispatcher = self.updater.dispatcher
 
@@ -18,6 +19,6 @@ class TelegramBot:
 
 
 if __name__ == '__main__':
-    bot = TelegramBot()
+    bot = PythonTelegramBot()
     bot.updater.start_polling()
     bot.updater.idle()

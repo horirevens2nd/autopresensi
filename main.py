@@ -1,3 +1,4 @@
+#!/usr/bin/env pipenv-shebang
 import os
 import time
 import logging.config
@@ -8,9 +9,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import *
-from telegrambot import TelegramBot
+from selenium.common.exceptions import (
+    UnexpectedAlertPresentException, NoSuchElementException, TimeoutException)
 
+from telegrambot import PythonTelegramBot
+
+
+# create bot object
+bot = PythonTelegramBot()
+
+# init logging
+with open('logging.yaml', 'r') as file:
+    config = yaml.load(file, Loader=yaml.FullLoader)
+    logging.config.dictConfig(config)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 # chrome options
 path = os.path.join(os.path.dirname(__file__), 'chromedriver')
@@ -18,16 +31,6 @@ options = Options()
 options.add_argument('--headless')
 driver = webdriver.Chrome(executable_path=path, options=options)
 wait = WebDriverWait(driver, 10)
-
-# logging setup
-with open('logging.yaml', 'r') as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-    logging.config.dictConfig(config)
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# init TelegramBot
-bot = TelegramBot()
 
 
 def login_app(action):
@@ -37,10 +40,10 @@ def login_app(action):
         driver.find_element(By.NAME, "Password").send_keys('1991091812')
         driver.find_element(By.XPATH,
                             "//button[normalize-space()='Login']").click()
-    except (UnexpectedAlertPresentException, NoSuchElementException) as e:
+    except (UnexpectedAlertPresentException, NoSuchElementException, TimeoutException) as e:
         logger.exception(e)
         driver.quit()
-        bot.send_message(ptext='Login error')
+        bot.send_message(ptext='Sir.. you can\'t login coz of error')
     else:
         if action == 'check_in':
             check_in()
