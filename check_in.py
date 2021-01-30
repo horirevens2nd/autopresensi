@@ -1,3 +1,4 @@
+#!/usr/bin/env pipenv-shebang
 from main import login_app
 
 if __name__ == '__main__':

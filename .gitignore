@@ -1,8 +1,7 @@
-# PyCharm
-.idea/
-
-# Python
+# directories
+.vscode/
+.git/
 __pycache__/
 
-# Logs
-logs/
+# files
+logs/*.log
