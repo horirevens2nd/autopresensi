@@ -1,8 +1,8 @@
 version: 1
 formatters:
   default_formatter:
-    format: '%(asctime)s %(levelname)s : %(message)s'
-    datefmt: '%Y-%m-%d %H:%M:%S'
+    format: "%(asctime)s | %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
 filters:
   info_filter:
     (): logging_filter.InfoFilter
@@ -24,5 +24,5 @@ handlers:
     formatter: default_formatter
     filename: logs/error.log
 root:
-  handlers: [ console_handler, info_handler, error_handler ]
+  handlers: [console_handler, info_handler, error_handler]
   propagate: yes

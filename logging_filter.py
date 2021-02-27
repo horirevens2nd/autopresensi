@@ -2,9 +2,7 @@ import logging.config
 
 
 class InfoFilter(logging.Filter):
-    """
-    Get message only from INFO tag
-    """
+    """get message only from INFO tag"""
 
     def filter(self, message):
         return not (message.levelname == 'DEBUG') | \
