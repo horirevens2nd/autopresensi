@@ -1,5 +1,6 @@
 #!/usr/bin/env pipenv-shebang
-from main import login_app
+from presensi import Presensi
 
 if __name__ == '__main__':
-    login_app('check_in')
+    presensi = Presensi()
+    presensi.login_app(action='check_in')
