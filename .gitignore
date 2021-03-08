@@ -3,3 +3,6 @@
 .git/
 __pycache__/
 logs/
+
+# files
+secret.yaml
