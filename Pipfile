@@ -7,6 +7,7 @@ verify_ssl = true
 autopep8 = "*"
 pylint = "*"
 pycodestyle = "*"
+pretty-errors = "*"
 
 [packages]
 selenium = "==3.141.0"

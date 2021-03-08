@@ -5,7 +5,7 @@ formatters:
     datefmt: "%Y-%m-%d %H:%M:%S"
 filters:
   info_filter:
-    (): logging_filter.InfoFilter
+    (): loggingfilter.InfoFilter
 handlers:
   console_handler:
     class: logging.StreamHandler
